@@ -1,0 +1,48 @@
+{
+  "summary": "Phase 2 backend testing complete. Wrote /app/backend/tests/test_phase2.py with 23 new tests covering: AI Settings (GET/PUT model+api_key encrypt/clear, /test connection, usage counter increment), AI Daily Brief, AI Weekly Review, Dependency Intelligence (graph/bottlenecks/per-task with seeded A->B->C chain), AI Memory CRUD + Claude-driven /extract, Public Share Briefing (token uniqueness, no-auth public GET, views increment, 404, list-requires-auth, delete-only-by-owner verified via second registered user), Productivity Intelligence shape, regression on /auth/login + /dashboard/summary + /tasks CRUD + no _id leakage, and WebSocket auth (accepts valid JWT, rejects invalid). All 23/23 pass against external URL. Real Claude calls verified (PONG, daily-brief narrative, weekly JSON, memory extraction).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "WS /api/ws", "issue": "On invalid token, server calls ws.close(code=4001) BEFORE ws.accept(). Starlette converts close-before-accept into an HTTP 403 handshake rejection, so the documented WS close code 4001 never reaches the client. Functionally rejection works. Fix: call await ws.accept() first, then await ws.close(code=4001)."},
+      {"endpoint": "DELETE /api/share/brief/{token}", "issue": "Returns {ok:true} even when a non-owner calls it (silent no-op via owner_id filter on delete_one). Consider returning 403/404 to make ownership boundary explicit (same pattern as DELETE /projects flagged in iteration_1)."},
+      {"endpoint": "POST /api/settings/ai/test", "issue": "ok flag is True even when claude returns 'AI error: ...' as long as it does not start with that exact prefix. Tighter check (e.g., explicit PONG match) would catch silent provider failures."},
+      {"endpoint": "GET /api/share/brief/{token} (expired)", "issue": "Expires comparison uses datetime.fromisoformat without tz coercion; if stored expires_at is naive vs aware, the comparison silently falls into except branch and treats expired briefs as valid. Currently expires_at is always tz-aware (timedelta from datetime.now(timezone.utc)) so it works, but the except: pass swallows real errors too."},
+      {"endpoint": "POST /api/ai/memory/extract", "issue": "Persists every pattern returned by Claude with no dedupe; repeated calls cause memory bloat. Add hash-based dedupe or 'replace previous auto-extracted' semantics."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_phase2.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/phase2_results.xml"
+  ],
+  "action_items": [
+    "WS: accept() before close(4001) so the documented close code actually reaches the client",
+    "Return 403/404 on DELETE /share/brief/{token} when caller is not owner (and on DELETE /projects/{pid} per iteration_1)",
+    "Tighten POST /settings/ai/test ok-check to a strict PONG match",
+    "Dedupe POST /ai/memory/extract output to avoid memory bloat on repeated runs",
+    "Replace broad 'except Exception: pass' in date parsing inside /share/brief/{token} and /analytics/intelligence with explicit handling/logging",
+    "(carried from iter_1) server.py is now 1525 lines — split into routers before phase 3"
+  ],
+  "critical_code_review_comments": [
+    "server.py grew from 861 -> 1525 lines this iteration. Settings, dependencies, memory, share, intelligence, websocket should be separate routers/modules. Maintainability risk.",
+    "Encryption: ENCRYPTION_KEY rotation strategy is undefined — if the key changes, all stored api_key_encrypted values become unreadable. Document or implement key-version handling.",
+    "Cache: /share/brief/{token} reads share_briefs_cache keyed only by user_id, but multiple share tokens for the same user share the same cached narrative — fine today but couples brief content to last generator's compact payload.",
+    "JSON parsing for weekly-review, memory-extract, share-brief all use raw.find('{')..rfind('}') and silently fall back to empty data — successful Claude calls returning valid prose without JSON envelope yield blank reviews with no log signal.",
+    "WebSocket: no heartbeat / ping interval. Long-lived connections behind k8s ingress will be dropped silently. Add periodic ws.send_json({type:'ping'}) or asyncio.wait_for on receive_text.",
+    "Bottleneck impact_score formula is fine but undocumented; expose constants or move into a named function for testability.",
+    "/api/settings/ai/test does not validate that a user-supplied api_key actually works before flipping use_own_key=true — a wrong key would silently fail every subsequent AI call. Consider validating on PUT."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase2.py",
+    "/app/test_reports/pytest/phase2_results.xml",
+    "/app/test_reports/iteration_2.json"
+  ],
+  "success_rate": {"backend": "100% (23/23 phase2 tests)", "frontend": "not_tested"},
+  "test_credentials": "founder@opscore.app / test123 (verified)",
+  "seed_data_creation": "Tests create TEST_-prefixed projects/tasks/share-briefs/memory entries and clean up after themselves. A throwaway TEST_other_<hex>@opscore.app user is registered for ownership-boundary test (not cleaned up — no delete-user endpoint). Memory /extract writes Claude-derived patterns and the test deletes them.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Two pytest files now exist: backend/tests/backend_test.py (iter1, 25 tests) and backend/tests/test_phase2.py (iter2, 23 tests). Run both: pytest backend/tests/ -v. Together they cover every documented endpoint. Phase 2 AI endpoints make real Claude calls — full run is ~40s. WebSocket tests require the `websockets` python lib (already installed, v16). Public share GET is intentionally hit WITHOUT Authorization to verify no-auth access. WS invalid-token test accepts EITHER WS close 4001 OR HTTP 403 because of the close-before-accept implementation detail noted in backend_issues.",
+  "rca_of_the_issue": "WS test originally failed expecting close code 4001 but received HTTP 403. RCA: server calls await ws.close(code=4001) without first awaiting ws.accept(). Starlette's WebSocket protocol implementation, when close is called pre-accept, denies the upgrade handshake itself with HTTP 403 rather than completing the handshake and then sending a close frame. Net behavior is identical from a security standpoint (connection refused) but the documented 4001 code is unreachable. Mitigation: in ws_endpoint, do `await ws.accept()` first, then on auth failure `await ws.close(code=4001)` so clients can read the close code."
+}

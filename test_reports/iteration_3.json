@@ -1,0 +1,54 @@
+{
+  "summary": "Phase-3 backend + smoke frontend testing complete. Authored /app/backend/tests/test_phase3.py with 29 tests covering: OTP-disabled login (otp_required=false + session_hours=6), public registration disabled (403), OTP-verify/accept-invite invalid id 404, change-password (wrong current 400, short pwd 400/422, full happy path on invitee), SMTP CRUD (host/port/from_email/start_tls + password encryption — has_password roundtrips true→clear), SMTP test 400 when not configured, email templates (all 4 keys present, override+reset+unknown-key 400), team invite with editor role + revoke (status flips to revoked), project sharing (my_role on list, share editor, members listing with roles, PATCH role to viewer, DELETE member, non-owner share 403 via second-user login with temp pwd), tasks assignee email path (no 500 without SMTP), scope=mine|all filters + day_of_week + non-member 403 on foreign project_id, reminders task/note CRUD + invalid entity_type 400, calendar synthetic task-* events appear + PATCH synthetic returns 400 + DELETE real, canvas full CRUD with node_count/edge_count, security headers (X-Content-Type-Options=nosniff, X-Frame-Options=DENY, Referrer-Policy). All 29/29 PASS. Frontend smoke: Arabic RTL login form (data-testid=login-email/login-password), successful login lands on dashboard with side nav (Dashboard, Projects, Tasks, Weekly Schedule, Calendar, Graph, Focus, Notes, Memory, Weekly Review, Team, Analytics, Notifications, Settings); Calendar /calendar renders month view (May 2026) and shows synthetic task event 'Ship MVP' on day 14 — confirms backend synthetic injection works on UI; Graph /graph renders empty state with 'New canvas' CTA (@xyflow/react loads, no console errors); Settings /settings has 4 tabs (AI / SMTP / Email Templates / Security); Team /team shows invite form with viewer/editor role chips. Zero console errors during navigation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /auth/change-password", "issue": "Pydantic enforces new_password min_length=8 (returns 422) while the route handler also re-checks length (returns 400). Two divergent error codes for the same condition — pick one. Also the founder account is seeded with a 6-char password ('test123') which is now impossible to set back via the public API; mass-rotate founder via DB migration or relax min length on first-rotation."},
+      {"endpoint": "POST /projects/{pid}/share", "issue": "Owner-only enforcement uses require_admin=True on _load_project_or_403, but the helper conflates 'project owner' with global is_admin. A user who is global is_admin=False but project owner should still be able to share — currently works because owner check passes first, but the parameter naming is misleading."},
+      {"endpoint": "POST /reminders", "issue": "Note ownership check uses {id, owner_id} but tasks check (owner_id OR assignee_id). Notes shared via a project are not reachable for reminders by editors. Acceptable for v1 (notes are personal) but worth documenting."},
+      {"endpoint": "POST /calendar/events", "issue": "No validation that 'end' > 'start'; an event with end before start is accepted silently."},
+      {"endpoint": "PATCH /calendar/events/{eid}", "issue": "CalendarEventUpdate has no 'task_id' field, so user-created event linkage to a task cannot be updated later — only deleted+recreated."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Calendar (RTL)", "issues": ["Header reads 'مايو 2026' but day cells are LTR-numbered (1..31). Acceptable per i18n convention, but verify weekend highlight matches Arabic Sun-start vs Sat-start (currently Sun column on the right which is correct for ar-EG calendars)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase3.py",
+    "/app/test_reports/pytest/phase3_results.xml"
+  ],
+  "action_items": [
+    "Unify change-password error response: either rely on Pydantic 422 OR catch upfront and always return 400 with a uniform JSON body; document on the API.",
+    "Decide policy for founder/legacy seeded users whose stored password is shorter than the new 8-char minimum — provide a one-time admin override or migration.",
+    "Add server-side validation that calendar event 'end' must be >= 'start' (both POST and PATCH).",
+    "Allow CalendarEventUpdate.task_id so events can be re-linked to a task without recreate.",
+    "Rename helper require_admin → require_owner_or_admin to avoid the 'global is_admin' confusion in project sharing.",
+    "(carried) Split server.py (~3120 lines) into routers (auth, projects, tasks, settings, reminders, calendar, canvas, analytics, ai) — maintainability risk continues to grow each iteration.",
+    "(carried iter_2) WS: accept() before close(4001); tighten /settings/ai/test PONG match; dedupe /ai/memory/extract."
+  ],
+  "critical_code_review_comments": [
+    "server.py now ~3120 lines — calendar/canvas/reminders/SMTP/email-templates all live in the same module. Each is independently testable; please extract to /app/backend/routers/*.py.",
+    "_reminder_loop has try/except around the whole iteration but no per-reminder logging of why an attempt was skipped (`if not user: ... \"error\": \"user_missing\"`) — good. But if email send fails it sets sent=True with `error=...`. That means a transient SMTP failure permanently marks the reminder as sent. Use a retry counter (e.g., max 3 attempts) before marking sent.",
+    "Calendar synthetic events return color hex '#FF4500' regardless of project — losing the per-project color hint already stored on the Project doc.",
+    "PUT /settings/smtp has no validation that port is in plausible range (1..65535) and accepts conflicting use_tls=True AND start_tls=True silently.",
+    "Project sharing email reuses 'task_assigned' template — content will read as a task notification, not a project-share. Add a dedicated 'project_share' template key or branch.",
+    "Tasks list with day_of_week=N short-circuits to [] if no projects match; that's fine, but inconsistent with other empty filters that still return the base query. Document the contract.",
+    "No rate-limit on /auth/change-password — a stolen token could brute-force 'current_password' offline by repeated requests."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase3.py",
+    "/app/test_reports/pytest/phase3_results.xml",
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {"backend": "100% (29/29 phase3 tests)", "frontend": "100% (smoke: login + calendar + graph + settings + team all loaded, zero console errors)"},
+  "test_credentials": "founder@opscore.app / test123 (verified — restored after intermediate test mutated it; see RCA)",
+  "seed_data_creation": "Tests create TEST_-prefixed projects/tasks/notes/canvases/reminders/calendar-events and clean up. Multiple throwaway test_inv_<hex>@example.com and test_outsider_<hex>@example.com invitee users are created via /team/invite for sharing/access-control tests (no delete-user endpoint, so they accumulate). One test_chpwd_<hex>@example.com user has a changed password to verify the flow.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Three pytest files now: backend_test.py (iter1, 25), test_phase2.py (iter2, 23), test_phase3.py (iter3, 29). Run all: `pytest /app/backend/tests/ -v`. Founder pwd is 'test123' (6 chars) — the API enforces min 8 chars on /auth/change-password so do NOT round-trip founder; always use a fresh invitee for password-change tests. SMTP host is empty by default in DB; some tests temporarily PUT a fake host then clear it — if a test crashes mid-flight, run `PUT /settings/smtp {\"host\":\"\",\"password\":\"\"}` to restore login-without-OTP behavior. Calendar list auto-injects synthetic 'task-{id}' events from tasks with scheduled_for/due_date — those IDs are NOT editable via PATCH /calendar/events. Reminder background loop runs every 60s and marks reminders sent=True on email failure (no retry).",
+  "rca_of_the_issue": "During iter_3 dev, an early version of test_change_password_success_then_revert changed founder password to 'test1234NEW' (8-char min satisfied) but the revert step failed pydantic min_length=8 when trying to set it back to the seeded 'test123' — founder's hash was left as 'test1234NEW' and subsequent session-scoped login fixtures threw 401 cascading-skipped the rest of the suite. Mitigation applied: restored founder hash directly via motor + passlib bcrypt at /app/backend, then rewrote the test to use a fresh invitee for change-password (no shared-credential blast radius). Recommendation to main agent: either (a) relax min_length to 6 for first-time rotation, OR (b) re-seed founder with an 8+ char password and update /app/memory/test_credentials.md to match — otherwise change-password can never be exercised against founder."
+}

@@ -1,0 +1,146 @@
+{
+  "theme_and_archetype": {
+    "theme": "Both (Light and Dark, user togglable)",
+    "archetype": "Archetype 4 (Swiss & High-Contrast) + Precision/Linear Style",
+    "description": "Premium, AI-native productivity OS for multi-project founders. High-contrast, minimal cognitive load, tactile, and highly responsive. Feels like a smart AI executive control room."
+  },
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "Manrope",
+    "mono_font": "JetBrains Mono",
+    "sizing_rules": {
+      "h1": "text-4xl sm:text-5xl tracking-tight font-medium",
+      "h2": "text-2xl sm:text-3xl tracking-tight font-medium",
+      "h3": "text-xl sm:text-2xl tracking-tight font-medium",
+      "body": "text-sm sm:text-base leading-relaxed",
+      "labels": "text-xs uppercase tracking-[0.2em] font-mono",
+      "data_numbers": "text-3xl font-light tracking-tighter"
+    },
+    "forbidden_fonts": [
+      "Inter",
+      "Roboto",
+      "Open Sans",
+      "Lato",
+      "Syne"
+    ]
+  },
+  "colors": {
+    "strategy": "Monochromatic structural grays + one vibrant kinetic trigger. No soft SaaS gradients. Use stark contrasts to direct attention.",
+    "css_variables_light": {
+      "--background": "0 0% 98%",
+      "--foreground": "240 10% 3.9%",
+      "--card": "0 0% 100%",
+      "--card-foreground": "240 10% 3.9%",
+      "--popover": "0 0% 100%",
+      "--popover-foreground": "240 10% 3.9%",
+      "--primary": "16 100% 50%",
+      "--primary-foreground": "0 0% 100%",
+      "--secondary": "240 4.8% 95.9%",
+      "--secondary-foreground": "240 5.9% 10%",
+      "--muted": "240 4.8% 95.9%",
+      "--muted-foreground": "240 3.8% 46.1%",
+      "--accent": "16 100% 50%",
+      "--accent-foreground": "0 0% 100%",
+      "--destructive": "0 84.2% 60.2%",
+      "--destructive-foreground": "0 0% 98%",
+      "--border": "240 5.9% 90%",
+      "--input": "240 5.9% 90%",
+      "--ring": "16 100% 50%",
+      "--radius": "0.375rem"
+    },
+    "css_variables_dark": {
+      "--background": "0 0% 2%",
+      "--foreground": "0 0% 98%",
+      "--card": "0 0% 4%",
+      "--card-foreground": "0 0% 98%",
+      "--popover": "0 0% 4%",
+      "--popover-foreground": "0 0% 98%",
+      "--primary": "16 100% 50%",
+      "--primary-foreground": "0 0% 100%",
+      "--secondary": "240 3.7% 15.9%",
+      "--secondary-foreground": "0 0% 98%",
+      "--muted": "240 3.7% 15.9%",
+      "--muted-foreground": "240 5% 64.9%",
+      "--accent": "16 100% 50%",
+      "--accent-foreground": "0 0% 100%",
+      "--destructive": "0 62.8% 30.6%",
+      "--destructive-foreground": "0 0% 98%",
+      "--border": "240 3.7% 15.9%",
+      "--input": "240 3.7% 15.9%",
+      "--ring": "16 100% 50%"
+    },
+    "forbidden_colors": [
+      "#9D4CDD",
+      "#1B93A4",
+      "Purple-blue gradients"
+    ]
+  },
+  "spacing_and_layout": {
+    "grid_strategy": "Control Room Grid (Mode B) + Asymmetric blocks",
+    "rules": [
+      "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 for main dashboard grids",
+      "Tight gaps: gap-4 or gap-6 for high data density",
+      "Every pixel utilized; use h-full on children for uniform height",
+      "Cardless or sharp rectangles (max rounded-md, 6px). Avoid heavily rounded-xl look.",
+      "Asymmetric layouts: left-aligned content, generous negative space.",
+      "Progressive disclosure: hide non-essential filters and actions until hover or click."
+    ]
+  },
+  "components_and_surfaces": {
+    "cards": "Flat solid background, 1px subtle border (border-border), no heavy drop shadows. On hover: subtle ring or border color change, -translate-y-[1px].",
+    "glassmorphism": "Used strictly for floating elements (command palettes, sticky headers, modals, toasts). Must be backdrop-blur-xl with backdrop-saturate-150 and 1px inner stroke.",
+    "buttons": "Sharp corners (rounded-md). Primary buttons use the kinetic accent color (Vermilion/Orange). Secondary are ghost or outlined.",
+    "forms": "Left-aligned labels, dense inputs. Use Shadcn customized for high contrast.",
+    "charts": "Recharts or Shadcn Charts. Use monochromatic tones + accent color for the main data line. No rainbow palettes.",
+    "icons": "lucide-react. Absolutely no emojis.",
+    "forbidden_patterns": [
+      "Generic centered card grids",
+      "Boring empty states without CTAs",
+      "Bootstrap-style columns"
+    ]
+  },
+  "motion_and_interactions": {
+    "strategy": "Micro-animations on every interaction. Linear-like speed. Fast and tactile.",
+    "libraries": [
+      "framer-motion"
+    ],
+    "rules": [
+      "Hover states for all interactive elements (must explicitly set text color on hover).",
+      "Focus states must have HIGHER contrast.",
+      "Smooth layout transitions (layoutId) for tabs and filters.",
+      "Staggered entrance animations for lists (opacity 0 to 1, y: 10 to 0, duration 0.2s max)."
+    ]
+  },
+  "media_and_assets": {
+    "images": [
+      {
+        "category": "texture_background",
+        "description": "Dark textured surface with warm light reflection - used for premium hero or empty state background accents",
+        "url": "https://images.unsplash.com/photo-1759145592725-aaf57a0f1cd8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjB0ZXh0dXJlJTIwbWFjcm98ZW58MHx8fHwxNzc4NDQ5OTUzfDA&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "category": "avatar_professional",
+        "description": "Professional avatar portrait for user profile in the dashboard",
+        "url": "https://images.unsplash.com/photo-1744956581253-abfd023141b1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBhdmF0YXIlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzgyNTQwMzZ8MA&ixlib=rb-4.1.0&q=85"
+      }
+    ]
+  },
+  "testing_attributes": {
+    "rule": "All interactive and key informational elements MUST include a data-testid attribute.",
+    "convention": "kebab-case, role-based",
+    "examples": [
+      "data-testid='login-form-submit-button'",
+      "data-testid='task-item-checkbox'",
+      "data-testid='theme-toggle-btn'"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build a 14-module AI-native productivity dashboard strictly following these guidelines.",
+    "Ensure complete light/dark theme toggle implementation using standard CSS variables injected into tailwind.",
+    "Replace generic UI elements with high-density, high-contrast layouts mimicking Linear/Superhuman. Focus on keyboard-driven feel.",
+    "Use Framer Motion for micro-interactions but keep them fast (duration <= 0.2s).",
+    "Use Outfit for headers, Manrope for body text, JetBrains Mono for metadata.",
+    "NEVER use placeholder images; use the provided image URLs.",
+    "Ensure 'data-testid' is on every actionable item."
+  ]
+}

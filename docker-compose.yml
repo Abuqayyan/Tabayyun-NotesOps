@@ -1,0 +1,88 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: opscore-mongo
+    restart: unless-stopped
+    # SECURITY (Phase 0): MongoDB is no longer published to the host. It is reachable
+    # only on the internal Docker network by the backend. Auth is enabled via the
+    # root credentials below. For an EXISTING data volume that predates auth, see the
+    # "MongoDB auth migration" section in BACKUP_RESTORE.md before first start.
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:?MONGO_USERNAME is required}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?MONGO_PASSWORD is required}
+    volumes:
+      - mongo_data:/data/db
+    # No "ports:" — internal network only.
+    healthcheck:
+      test: ["CMD", "mongosh", "-u", "${MONGO_USERNAME}", "-p", "${MONGO_PASSWORD}", "--authenticationDatabase", "admin", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: opscore-postgres
+    restart: unless-stopped
+    # Internal network only — not published to the host.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-opscore}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-opscore}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opscore} -d ${POSTGRES_DB:-opscore}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: opscore-backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      MONGO_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/?authSource=admin
+      DB_NAME: ${DB_NAME:-opscore}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-opscore}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-opscore}
+      # Secrets are REQUIRED — the app fails fast if these are missing/weak.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (min 32 chars, not a placeholder)}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_DAYS: "30"
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required (Fernet key)}
+      EMERGENT_LLM_KEY: ${EMERGENT_LLM_KEY:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-onboarding@resend.dev}
+      APP_NAME: OpsCore
+      UPLOAD_DIR: /data/uploads
+      MAX_UPLOAD_BYTES: "26214400"
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-}
+    volumes:
+      - uploads:/data/uploads
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:8001}
+    container_name: opscore-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  mongo_data:
+  pg_data:
+  uploads:
