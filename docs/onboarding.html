@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Tabayyun NotesOps — دليل التشغيل والإعداد (Onboarding)</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --soft:#f8fafc;
+    --brand:#1e3a8a; --brand2:#3b82f6; --green:#16a34a; --amber:#d97706; --red:#dc2626; --violet:#7c3aed;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{
+    font-family:"Segoe UI","Tahoma",Arial,sans-serif; color:var(--ink);
+    margin:0; font-size:12px; line-height:1.7;
+  }
+  @page{ size:A4; margin:18mm 14mm; }
+  h1,h2,h3,h4{ line-height:1.35; margin:0 0 .4em; }
+  h2{ font-size:19px; color:var(--brand); border-bottom:2px solid var(--brand); padding-bottom:6px; margin-top:8px; }
+  h3{ font-size:15px; color:var(--brand); margin-top:18px; }
+  h4{ font-size:13px; color:var(--ink); margin-top:14px; }
+  p{ margin:.3em 0 .7em; }
+  code{ font-family:"Consolas","Courier New",monospace; background:#eef2ff; color:#3730a3; padding:1px 5px; border-radius:4px; font-size:11px; direction:ltr; display:inline-block; }
+  .mono{ direction:ltr; font-family:"Consolas",monospace; }
+  table{ width:100%; border-collapse:collapse; margin:8px 0 14px; font-size:11px; }
+  th,td{ border:1px solid var(--line); padding:6px 8px; text-align:right; vertical-align:top; }
+  th{ background:var(--soft); color:var(--brand); font-weight:600; }
+  tr:nth-child(even) td{ background:#fcfdff; }
+  .badge{ display:inline-block; padding:1px 8px; border-radius:999px; font-size:10px; font-weight:600; border:1px solid; }
+  .b-admin{ color:#fff; background:var(--brand); border-color:var(--brand); }
+  .b-exec{ color:var(--violet); background:#f5f3ff; border-color:#ddd6fe; }
+  .b-mgr{ color:var(--amber); background:#fffbeb; border-color:#fde68a; }
+  .b-emp{ color:var(--green); background:#f0fdf4; border-color:#bbf7d0; }
+  .b-scope{ color:#0369a1; background:#f0f9ff; border-color:#bae6fd; }
+  .card{ border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:10px 0; background:#fff; }
+  .soft{ background:var(--soft); }
+  .step{ border-right:4px solid var(--brand2); padding:4px 14px 4px; margin:14px 0; background:#f8fafc; border-radius:0 8px 8px 0; }
+  .step .n{ display:inline-block; min-width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:var(--brand); color:#fff; font-weight:700; margin-left:8px; }
+  .note{ border-right:4px solid var(--amber); background:#fffbeb; padding:8px 14px; border-radius:0 8px 8px 0; margin:10px 0; }
+  .ok{ border-right:4px solid var(--green); background:#f0fdf4; padding:8px 14px; border-radius:0 8px 8px 0; margin:10px 0; }
+  ul,ol{ margin:.3em 1.2em .8em 0; padding:0; }
+  li{ margin:.2em 0; }
+  .cover{ text-align:center; padding-top:60mm; }
+  .cover h1{ font-size:34px; color:var(--brand); margin-bottom:4px; }
+  .cover .sub{ font-size:16px; color:var(--muted); }
+  .cover .meta{ margin-top:30mm; font-size:12px; color:var(--muted); }
+  .pill-row{ margin:6px 0; }
+  .kpi{ display:inline-block; border:1px solid var(--line); border-radius:8px; padding:6px 12px; margin:3px; font-size:11px; background:#fff; }
+  .pagebreak{ page-break-before:always; }
+  .toc a{ color:var(--ink); text-decoration:none; }
+  .toc li{ margin:.35em 0; }
+  .flow{ width:100%; text-align:center; margin:10px 0; }
+  .flow .box{ display:inline-block; border:1.5px solid var(--brand2); color:var(--brand); border-radius:8px; padding:6px 10px; margin:3px; font-weight:600; font-size:11px; }
+  .flow .arrow{ color:var(--muted); font-weight:700; margin:0 2px; }
+  small{ color:var(--muted); }
+  .legend span{ margin-left:10px; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div style="font-size:13px; letter-spacing:4px; color:var(--muted);">COMPANY OPERATING SYSTEM</div>
+  <h1>Tabayyun&nbsp;NotesOps</h1>
+  <div class="sub">دليل التشغيل والإعداد الكامل — Onboarding &amp; Operations Guide</div>
+  <div class="meta">
+    نظام تشغيل الشركة + CRM + الذكاء التنفيذي<br>
+    الإصدار: Pilot &nbsp;•&nbsp; التاريخ: 2026-06-04<br>
+    للمسؤول (Administrator) ومسؤولي الإعداد
+  </div>
+</section>
+
+<!-- ============ TOC ============ -->
+<section class="pagebreak">
+<h2>المحتويات</h2>
+<ol class="toc">
+  <li><a href="#sec1">1. ما هو النظام ولماذا</a></li>
+  <li><a href="#sec2">2. الوحدات (Modules) والشاشات</a></li>
+  <li><a href="#sec3">3. نموذج الصلاحيات (RBAC): الأدوار والنطاقات</a></li>
+  <li><a href="#sec4">4. كتالوج الصلاحيات الكامل</a></li>
+  <li><a href="#sec5">5. فلو الإعداد خطوة بخطوة (Onboarding)</a></li>
+  <li><a href="#sec6">6. إضافة الأقسام والموظفين وخطوط التبعية</a></li>
+  <li><a href="#sec7">7. تعيين الأدوار بالنطاق الصحيح</a></li>
+  <li><a href="#sec8">8. التشغيل اليومي (Daily Loop)</a></li>
+  <li><a href="#sec9">9. رحلات المستخدمين حسب الدور</a></li>
+  <li><a href="#sec10">10. جدول الصلاحيات لكل دور نظامي</a></li>
+  <li><a href="#sec11">11. خريطة الشاشات والمسارات</a></li>
+  <li><a href="#sec12">12. أفضل الممارسات وقائمة تحقّق الإطلاق</a></li>
+</ol>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="pagebreak" id="sec1">
+<h2>1. ما هو النظام ولماذا</h2>
+<p><b>Tabayyun NotesOps</b> هو <b>نظام تشغيل داخلي للشركة</b> (Company OS) يجمع في منصّة واحدة: إدارة المؤسسة (أقسام وموظفون وخطوط تبعية)، الصلاحيات الديناميكية، التحديثات اليومية، الاجتماعات ومحاضرها وبنود العمل، سلاسل الموافقات، قاعدة المعرفة، CRM متكامل، ولوحة تنفيذية بذكاء اصطناعي للمدير التنفيذي.</p>
+<p>الفلسفة المعمارية: <b>Modular Monolith</b> (تطبيق واحد منظّم في وحدات) مناسب لأقل من 50 مستخدمًا على خادم واحد خلف Cloudflare. تخزين هجين: <b>PostgreSQL</b> كمصدر حقيقة للهوية والصلاحيات والأقسام والموافقات والتدقيق، و<b>MongoDB</b> للمحتوى والنشاط والمهام والملاحظات وCRM.</p>
+<div class="card soft">
+  <b>المبدأ الأساسي للصلاحيات:</b> الكود يفحص <b>الصلاحيات (permissions)</b> وليس أسماء الأدوار. الأدوار مجرد «حِزم» قابلة للتعديل من الصلاحيات، تُسنَد للمستخدمين ضمن <b>نطاق</b> (الشركة كلها / قسم محدّد / مشروع محدّد). هذا يعطيك مرونة كاملة دون لمس الكود.
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="sec2">
+<h3>2. الوحدات (Modules) والشاشات</h3>
+<table>
+  <tr><th>الوحدة</th><th>الشاشة في الواجهة</th><th>ماذا تفعل</th></tr>
+  <tr><td>اللوحة التنفيذية</td><td>التنفيذي <span class="mono">/executive</span></td><td>صحة الشركة والأقسام، المخاطر، التصعيدات، الموافقات المعلّقة، خط أنابيب CRM والتوقعات، توصيات ذكية.</td></tr>
+  <tr><td>التحديثات اليومية</td><td>التحديثات اليومية <span class="mono">/daily-updates</span></td><td>يكتب كل موظف: اليوم/غدًا/المعوّقات؛ ويرى المدير تحديثات فريقه وقسمه.</td></tr>
+  <tr><td>الاجتماعات</td><td>الاجتماعات <span class="mono">/meetings</span></td><td>جدولة، محضر (MOM)، قرارات، نقاط نقاش، بنود عمل (كل بند يُنشئ مهمة تلقائيًا)، ملخص ذكي.</td></tr>
+  <tr><td>الموافقات</td><td>الموافقات <span class="mono">/approvals</span></td><td>رفع طلبات وتمريرها عبر سلسلة موافقين تُحدَّد بالقاعدة (مدير مقدّم الطلب / دور / شخص).</td></tr>
+  <tr><td>CRM</td><td>CRM <span class="mono">/crm</span></td><td>شركات، جهات اتصال، عملاء محتملون، فرص، خط الأنابيب، التوقعات، ذكاء المبيعات.</td></tr>
+  <tr><td>قاعدة المعرفة</td><td>المعرفة <span class="mono">/knowledge</span></td><td>سياسات/إجراءات/أدلة، مع نُسخ (versions) وصلاحيات وبحث.</td></tr>
+  <tr><td>المؤسسة</td><td>المؤسسة <span class="mono">/organization</span></td><td>الأقسام، الموظفون، الأدوار والصلاحيات والتعيينات (RBAC).</td></tr>
+  <tr><td>مركز العمليات</td><td>العمليات <span class="mono">/ops</span></td><td>مراقبة النظام والجدولة والأخطاء (للمسؤول).</td></tr>
+  <tr><td>مركز الإعدادات</td><td>التهيئة <span class="mono">/settings-center</span></td><td>إعدادات الشركة/الإشعارات/الأمان/CRM.</td></tr>
+  <tr><td>مركز الإشعارات</td><td>الوارد <span class="mono">/inbox</span> + جرس الإشعارات</td><td>إشعارات حيّة، عدّاد غير مقروء، تصفية وأرشفة.</td></tr>
+  <tr><td>البحث الشامل</td><td>لوحة الأوامر <span class="mono">Ctrl/⌘ + K</span></td><td>بحث مُصفّى بالصلاحيات عبر المهام/المشاريع/الموظفين/الاجتماعات/الموافقات/CRM/المعرفة.</td></tr>
+</table>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="pagebreak" id="sec3">
+<h2>3. نموذج الصلاحيات (RBAC): الأدوار والنطاقات</h2>
+
+<h3>الأدوار النظامية المُهيّأة مسبقًا</h3>
+<p>تُزرَع تلقائيًا، <b>قابلة للتعديل</b>، ومحميّة من الحذف فقط (<code>is_system</code>). يمكنك تعديل صلاحياتها أو إنشاء أدوار جديدة كليًا.</p>
+<table>
+  <tr><th>الدور</th><th>المفتاح</th><th>النطاق المعتاد</th><th>الوصف</th></tr>
+  <tr><td><span class="badge b-admin">Administrator</span></td><td class="mono">administrator</td><td><span class="badge b-scope">global</span></td><td>وصول كامل لكل المنصّة (كل الصلاحيات <code>*</code>).</td></tr>
+  <tr><td><span class="badge b-exec">Executive</span></td><td class="mono">executive</td><td><span class="badge b-scope">global</span></td><td>رؤية على مستوى الشركة: لوحات، تقارير، نشاط، تدقيق، ذكاء، CRM (عرض).</td></tr>
+  <tr><td><span class="badge b-mgr">Department Manager</span></td><td class="mono">department_manager</td><td><span class="badge b-scope">department:&lt;id&gt;</span></td><td>إدارة ومراقبة <b>قسم واحد</b> — يُسنَد بنطاق القسم.</td></tr>
+  <tr><td><span class="badge b-emp">Employee</span></td><td class="mono">employee</td><td><span class="badge b-scope">global</span> أو <span class="badge b-scope">department</span></td><td>الوصول القياسي للموظف (تحديثات، مهام، اجتماعات عرض، موافقات رفع، معرفة، CRM كتابة).</td></tr>
+</table>
+
+<h3>النطاقات (Scopes) — الفكرة المحورية</h3>
+<p>كل تعيين دور = <b>(مستخدم + دور + نطاق)</b>. النطاق يحدّد «أين» تسري صلاحيات الدور:</p>
+<table>
+  <tr><th>النطاق</th><th>المعنى</th><th>مثال</th></tr>
+  <tr><td><span class="badge b-scope">global</span></td><td>الشركة كلها</td><td>المدير التنفيذي يرى كل شيء.</td></tr>
+  <tr><td><span class="badge b-scope">department</span></td><td>قسم واحد فقط</td><td>«مدير قسم» بنطاق <span class="mono">department:sales</span> يدير المبيعات فقط.</td></tr>
+  <tr><td><span class="badge b-scope">project</span></td><td>مشروع واحد فقط</td><td>صلاحيات محصورة بمشروع معيّن.</td></tr>
+</table>
+<div class="ok"><b>قاعدة ذهبية:</b> نفس الدور «مدير قسم» يُسنَد لأشخاص مختلفين بنطاقات أقسام مختلفة، فيدير كلٌّ قسمه فقط — دون إنشاء أدوار مكرّرة.</div>
+<div class="note"><b>المسؤول (is_admin):</b> أي مستخدم يحمل العلم <code>is_admin: true</code> هو <b>superuser</b> يتجاوز كل فحوص الصلاحيات. استخدمه لحساب الإعداد الأول فقط، وامنح البقية أدوارًا مُحدَّدة.</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="pagebreak" id="sec4">
+<h2>4. كتالوج الصلاحيات الكامل</h2>
+<p>الصلاحيات granular ومُنمّطة (<code>module.action</code>). هذه هي المزروعة فعليًا:</p>
+
+<h4>لوحات وتقارير</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">company.dashboard.view</td><td>عرض اللوحة التنفيذية للشركة</td></tr>
+<tr><td class="mono">department.dashboard.view</td><td>عرض لوحة قسم</td></tr>
+<tr><td class="mono">report.view_company</td><td>عرض تقارير الشركة</td></tr>
+<tr><td class="mono">report.view_department</td><td>عرض تقارير القسم</td></tr></table>
+
+<h4>المؤسسة و RBAC والتدقيق</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">department.view / department.manage</td><td>عرض / إنشاء وتعديل وحذف الأقسام</td></tr>
+<tr><td class="mono">employee.view / employee.manage</td><td>عرض / إنشاء وتعديل ملفات الموظفين وخطوط التبعية</td></tr>
+<tr><td class="mono">role.view / role.manage</td><td>عرض / إنشاء وتعديل الأدوار وتعيينها للمستخدمين</td></tr>
+<tr><td class="mono">activity.view_all / activity.view_department</td><td>عرض موجز النشاط (الشركة / القسم)</td></tr>
+<tr><td class="mono">audit.view</td><td>عرض سجل التدقيق</td></tr></table>
+
+<h4>العمل اليومي</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">project.create / project.manage / task.manage</td><td>إنشاء مشاريع / إدارة أي مشروع / إدارة أي مهمة</td></tr>
+<tr><td class="mono">daily_update.submit</td><td>إرسال تحديث يومي شخصي</td></tr>
+<tr><td class="mono">daily_update.view_team / view_department / view_all</td><td>عرض تحديثات المرؤوسين / القسم / كل الشركة</td></tr></table>
+
+<h4>الاجتماعات</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">meeting.create / edit / cancel / view</td><td>إنشاء / تعديل / إلغاء / عرض الاجتماعات</td></tr>
+<tr><td class="mono">meeting.mom.edit / mom.view</td><td>تعديل / عرض محضر الاجتماع</td></tr></table>
+
+<h4>الموافقات</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">approval.create</td><td>رفع طلبات موافقة</td></tr>
+<tr><td class="mono">approval.approve</td><td>اتخاذ قرار في خطوة مُسنَدة</td></tr>
+<tr><td class="mono">approval.view</td><td>عرض طلبات تتجاوز طلباتك</td></tr>
+<tr><td class="mono">approval.manage</td><td>إدارة القوالب وتجاوز القرارات</td></tr></table>
+
+<h4>المعرفة و CRM والذكاء والمنصّة</h4>
+<table><tr><th>المفتاح</th><th>الوصف</th></tr>
+<tr><td class="mono">kb.view / create / edit / delete / manage</td><td>قاعدة المعرفة (عرض/إنشاء/تعديل/حذف/إدارة كاملة)</td></tr>
+<tr><td class="mono">crm.company|contact|lead|opportunity.view/create/edit/delete</td><td>صلاحيات CRM دقيقة لكل كيان</td></tr>
+<tr><td class="mono">crm.manage</td><td>إدارة كل سجلات CRM (كل النطاقات، حذف نهائي)</td></tr>
+<tr><td class="mono">intelligence.view / executive.digest.view</td><td>الذكاء التنفيذي والملخّصات</td></tr>
+<tr><td class="mono">ops.view / settings.manage / export.data</td><td>مركز العمليات / إدارة الإعدادات / تصدير البيانات</td></tr>
+<tr><td class="mono">finance.view</td><td>(مزروعة لمراحل قادمة) عرض البيانات المالية</td></tr></table>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="pagebreak" id="sec5">
+<h2>5. فلو الإعداد خطوة بخطوة (Onboarding)</h2>
+
+<div class="flow">
+  <span class="box">0. حساب الأدمن</span><span class="arrow">←</span>
+  <span class="box">1. إعدادات الشركة</span><span class="arrow">←</span>
+  <span class="box">2. الأقسام</span><span class="arrow">←</span>
+  <span class="box">3. المستخدمون + الموظفون</span><span class="arrow">←</span>
+  <span class="box">4. تعيين الأدوار بالنطاق</span><span class="arrow">←</span>
+  <span class="box">5. التشغيل اليومي</span>
+</div>
+
+<div class="step"><span class="n">0</span><b>تجهيز حساب المسؤول الأول</b>
+<ul>
+  <li>أنشئ أول أدمن عبر سكربت البذر: <code>docker compose exec backend python -m scripts.create_admin --email you@company.com --password '...'</code> (ينشئ مستخدمًا بـ <code>is_admin:true</code>).</li>
+  <li>سجّل الدخول من <span class="mono">/login</span>. إن كان البريد (SMTP) مُفعّلًا سيصلك رمز OTP، وإلا فدخول مباشر بالبريد وكلمة المرور.</li>
+</ul></div>
+
+<div class="step"><span class="n">1</span><b>إعدادات الشركة</b> — التهيئة <span class="mono">/settings-center</span>
+<ul>
+  <li>قسم «الشركة»: الاسم، الشعار، اللون، اللغة، المنطقة الزمنية.</li>
+  <li>«الإشعارات»: تفعيل البريد/داخل التطبيق وتكرار الملخّص. «الأمان»: مدة الجلسة، انتهاء الرمز، حد كلمة المرور، مدة OTP. «CRM»: المرحلة الافتراضية والعملة.</li>
+</ul>
+<small>تحتاج صلاحية <code>settings.manage</code> للتعديل (المسؤول يملكها).</small></div>
+
+<div class="step"><span class="n">2</span><b>إنشاء الأقسام</b> — المؤسسة <span class="mono">/organization</span> ← تبويب «الأقسام»
+<ul>
+  <li>أنشئ الأقسام الجذرية (مثل: المبيعات، التقنية، المالية، مكتب الرئيس التنفيذي).</li>
+  <li>للهيكل الهرمي: عيّن «القسم الأب» (<code>parent_department_id</code>) — مثل: مكتب الرئيس ← وحدات فرعية.</li>
+  <li>عيّن «مدير القسم» (<code>lead_user_id</code>) لاحقًا بعد إنشاء المستخدمين.</li>
+</ul></div>
+
+<div class="step"><span class="n">3</span><b>المستخدمون ثم ملفات الموظفين</b> (انظر القسم 6 للتفصيل)
+<ul>
+  <li>أنشئ حسابات المستخدمين (دعوة/تسجيل)، ثم اربط لكل مستخدم <b>ملف موظف</b> فيه: المنصب، القسم الأساسي، والمدير المباشر (<code>manager_id</code>).</li>
+</ul></div>
+
+<div class="step"><span class="n">4</span><b>تعيين الأدوار بالنطاق</b> (انظر القسم 7)
+<ul>
+  <li>المدير التنفيذي ← دور <span class="badge b-exec">Executive</span> بنطاق <span class="badge b-scope">global</span>.</li>
+  <li>مدير قسم ← دور <span class="badge b-mgr">Department Manager</span> بنطاق <span class="badge b-scope">department:&lt;id&gt;</span>.</li>
+  <li>الموظفون ← دور <span class="badge b-emp">Employee</span>.</li>
+</ul></div>
+
+<div class="step"><span class="n">5</span><b>انطلاق التشغيل اليومي</b> (انظر القسم 8) — تحديثات، اجتماعات، موافقات، CRM، معرفة.</div>
+
+<div class="ok"><b>كل إجراء يُسجَّل:</b> كل عملية إنشاء/تعديل/حذف تُسجَّل في <b>سجل التدقيق</b> وتظهر في <b>موجز النشاط</b> تلقائيًا.</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="pagebreak" id="sec6">
+<h2>6. إضافة الأقسام والموظفين وخطوط التبعية</h2>
+
+<h3>أ) الأقسام</h3>
+<p>المؤسسة <span class="mono">/organization</span> ← «الأقسام» ← «قسم جديد». الحقول:</p>
+<table>
+<tr><th>الحقل</th><th>المعنى</th></tr>
+<tr><td>name</td><td>اسم القسم (فريد).</td></tr>
+<tr><td>description</td><td>وصف اختياري.</td></tr>
+<tr><td>parent_department_id</td><td>القسم الأب (للهيكل الهرمي).</td></tr>
+<tr><td>lead_user_id</td><td>مستخدم مدير القسم.</td></tr>
+</table>
+
+<h3>ب) المستخدمون</h3>
+<p>أنشئ حساب لكل شخص (بريد + كلمة مرور). الموظف لا «يصير موظفًا» في الهيكل إلا بعد إنشاء <b>ملف موظف</b> له.</p>
+
+<h3>ج) ملفات الموظفين وخطوط التبعية</h3>
+<p>المؤسسة ← «الموظفون» ← «موظف جديد». الحقول:</p>
+<table>
+<tr><th>الحقل</th><th>المعنى</th></tr>
+<tr><td>user_id</td><td>المستخدم المرتبط (حساب موجود).</td></tr>
+<tr><td>position</td><td>المسمّى الوظيفي.</td></tr>
+<tr><td>primary_department_id</td><td>القسم الأساسي.</td></tr>
+<tr><td>manager_id</td><td><b>المدير المباشر</b> (ملف موظف آخر) — هذا هو خط التبعية.</td></tr>
+<tr><td>employment_status</td><td>الحالة (active افتراضيًا).</td></tr>
+</table>
+<div class="note"><b>لماذا خط التبعية (manager_id) مهم؟</b> لأنه <b>عمود فقري</b> لِـ: توجيه الموافقات («مدير مقدّم الطلب»)، رؤية المدير لتحديثات فريقه، وتجميع التقارير من القسم → الإدارة → الشركة.</div>
+<div class="card soft"><b>عضوية متعددة (اختياري):</b> يمكن للموظف أن يكون عضوًا في أكثر من قسم عبر «أعضاء القسم» (<code>department_members</code>) مع تحديد القسم الأساسي.</div>
+
+<h4>ترتيب صحيح موصى به</h4>
+<div class="flow">
+  <span class="box">أنشئ الأقسام</span><span class="arrow">←</span>
+  <span class="box">أنشئ المستخدمين</span><span class="arrow">←</span>
+  <span class="box">أنشئ ملفات الموظفين (بدون مدير)</span><span class="arrow">←</span>
+  <span class="box">اربط manager_id</span><span class="arrow">←</span>
+  <span class="box">عيّن lead_user_id للأقسام</span>
+</div>
+<small>أنشئ المدراء أولًا ثم اربط مرؤوسيهم بهم، أو أنشئ الجميع ثم حرّر <code>manager_id</code>. لا يمكن لموظف أن يكون مدير نفسه.</small>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="pagebreak" id="sec7">
+<h2>7. تعيين الأدوار بالنطاق الصحيح</h2>
+<p>المؤسسة <span class="mono">/organization</span> ← «الأدوار والصلاحيات (RBAC)». لكل تعيين تختار: المستخدم، الدور، نوع النطاق، ومعرّف النطاق.</p>
+
+<table>
+<tr><th>الشخص</th><th>الدور</th><th>النطاق</th><th>النتيجة</th></tr>
+<tr><td>الرئيس التنفيذي</td><td><span class="badge b-exec">Executive</span></td><td><span class="badge b-scope">global</span></td><td>يرى كل الشركة (لوحات/تقارير/نشاط/تدقيق/ذكاء).</td></tr>
+<tr><td>مدير المبيعات</td><td><span class="badge b-mgr">Department Manager</span></td><td><span class="badge b-scope">department: المبيعات</span></td><td>يدير قسم المبيعات فقط (تحديثات/اجتماعات/موافقات/CRM كامل/تقارير القسم).</td></tr>
+<tr><td>موظف</td><td><span class="badge b-emp">Employee</span></td><td><span class="badge b-scope">global</span></td><td>تحديثات يومية، مهام، اجتماعات عرض، رفع موافقات، معرفة، CRM كتابة.</td></tr>
+<tr><td>مسؤول النظام</td><td><span class="badge b-admin">Administrator</span> أو <code>is_admin</code></td><td><span class="badge b-scope">global</span></td><td>كل شيء.</td></tr>
+</table>
+
+<div class="note"><b>مهم — قاعدة النطاق:</b> عند اختيار نطاق «قسم» أو «مشروع» يجب تحديد <code>scope_id</code>. النطاق العام (global) لا يحتاج معرّفًا.</div>
+
+<h3>إنشاء دور مخصّص</h3>
+<p>المؤسسة ← «الأدوار» ← «دور جديد»: امنحه مفتاحًا واسمًا واختر مجموعة الصلاحيات من الكتالوج. مثال: «مسؤول معرفة» = <code>kb.view + kb.create + kb.edit</code>. الأدوار النظامية قابلة للتعديل لكنها محميّة من الحذف.</p>
+
+<h3>كيف يقرّر النظام؟</h3>
+<div class="card soft mono" style="text-align:left;">
+user_can(user, permission, resource) =<br>
+&nbsp;&nbsp;is_admin? → allow<br>
+&nbsp;&nbsp;else: هل لدى المستخدم تعيين دور يحوي <b>permission</b><br>
+&nbsp;&nbsp;ونطاقه يغطّي قسم/مشروع <b>resource</b> (أو global)؟ → allow / deny
+</div>
+<p>الواجهة تُخفي ما لا تملكه من عناصر التنقّل والأزرار، والخادم هو الحكم النهائي (يرفض بـ 403 ويظهر للمستخدم حالة ودّية).</p>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="pagebreak" id="sec8">
+<h2>8. التشغيل اليومي (Daily Loop)</h2>
+
+<h3>الموظف</h3>
+<ol>
+  <li><b>التحديث اليومي</b> <span class="mono">/daily-updates</span>: اكتب اليوم/غدًا/المعوّقات (قابل للتعديل في نفس اليوم).</li>
+  <li><b>المهام</b>: نفّذ مهامك (بما فيها المهام المتولّدة من بنود اجتماعات).</li>
+  <li><b>المعرفة</b> <span class="mono">/knowledge</span>: اقرأ السياسات والأدلة.</li>
+  <li><b>الموافقات</b> <span class="mono">/approvals</span>: ارفع طلبًا (إجازة/شراء/…)، وتابع حالته.</li>
+</ol>
+
+<h3>مدير القسم</h3>
+<ol>
+  <li>راجع <b>تحديثات الفريق/القسم</b> اليومية.</li>
+  <li>أدر <b>اجتماعًا</b> <span class="mono">/meetings</span>: سجّل المحضر (قرارات/نقاط نقاش) وأضف <b>بنود عمل</b> — كل بند يُنشئ مهمة بمالك.</li>
+  <li>قرّر <b>الموافقات</b> الموجّهة إليك عبر سلسلة التبعية.</li>
+  <li>أدر <b>CRM</b> قسمك (شركات/عملاء/فرص) وصدّر القوائم CSV/XLSX.</li>
+</ol>
+
+<h3>الرئيس التنفيذي</h3>
+<ol>
+  <li>افتح <b>اللوحة التنفيذية</b> <span class="mono">/executive</span>: صحة الشركة والأقسام، المخاطر، التصعيدات، الموافقات المعلّقة، خط أنابيب CRM والتوقعات، توصيات ذكية.</li>
+  <li><b>الذكاء</b> داخل CRM: رؤى الإيرادات والصفقات المتعثّرة.</li>
+  <li><b>مركز العمليات</b> <span class="mono">/ops</span>: صحة النظام والجدولة والأخطاء.</li>
+</ol>
+
+<h3>سلسلة الموافقات — مثال</h3>
+<div class="flow">
+  <span class="box">موظف يرفع طلبًا</span><span class="arrow">←</span>
+  <span class="box">المدير المباشر</span><span class="arrow">←</span>
+  <span class="box">مدير الإدارة</span><span class="arrow">←</span>
+  <span class="box">الرئيس التنفيذي</span><span class="arrow">←</span>
+  <span class="box">معتمَد ← آثار جانبية (مهمة/إشعار)</span>
+</div>
+<small>تُحدَّد كل خطوة بقاعدة: «مدير مقدّم الطلب» أو «دور» أو «شخص»، مع تذكيرات SLA عبر المجدول.</small>
+</section>
+
+<!-- ============ 9 ============ -->
+<section class="pagebreak" id="sec9">
+<h2>9. رحلات المستخدمين حسب الدور</h2>
+
+<div class="card"><b>① الرئيس التنفيذي</b><br>
+<small>الشاشات:</small> التنفيذي · CRM (ذكاء/خط أنابيب) · العمليات · جرس الإشعارات.<br>
+<small>الصلاحيات:</small> <code>company.dashboard.view, intelligence.view, report.view_company, crm.*.view, ops.view, audit.view</code> (عبر دور Executive).</div>
+
+<div class="card"><b>② مدير القسم</b><br>
+<small>الشاشات:</small> التحديثات اليومية · الاجتماعات (+MOM) · الموافقات · CRM · المؤسسة (عرض).<br>
+<small>الصلاحيات:</small> دور Department Manager <b>بنطاق قسمه</b> — تحديثات الفريق/القسم، اجتماعات كاملة، موافقة، CRM كامل داخل النطاق، تقارير القسم، معرفة.</div>
+
+<div class="card"><b>③ الموظف</b><br>
+<small>الشاشات:</small> اللوحة · المهام · التحديثات اليومية · الاجتماعات (عرض + بنوده) · المعرفة · CRM (ضمن النطاق) · رفع موافقات.<br>
+<small>الصلاحيات:</small> دور Employee — <code>task.manage, daily_update.submit, meeting.view, approval.create, kb.view, crm.*.create/edit</code>.</div>
+
+<div class="card"><b>④ مستخدم CRM (مبيعات)</b><br>
+<small>الرحلة:</small> أنشئ <b>شركة</b> و<b>جهة اتصال</b> ← أنشئ <b>عميلًا محتملًا</b> ← حرّكه عبر المراحل ← <b>حوّله</b> إلى <b>فرصة</b> ← أدِرها على لوحة <b>خط الأنابيب</b> ← تابع <b>التوقعات</b> و<b>الذكاء</b> (صفقات متعثّرة، متابعات، إيراد معرّض للخطر).</div>
+
+<h3>عوامل مشتركة</h3>
+<ul>
+  <li><b>بحث شامل:</b> <span class="mono">Ctrl/⌘ + K</span> — مُصفّى بالصلاحيات، مع بحثات حديثة.</li>
+  <li><b>مركز الإشعارات:</b> جرس بعدّاد غير مقروء + صفحة <span class="mono">/inbox</span> بتصفية وأرشفة.</li>
+  <li><b>تصدير:</b> أزرار CSV/XLSX على الموافقات والاجتماعات وCRM والمعرفة — مُدقّقة على الخادم.</li>
+</ul>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="pagebreak" id="sec10">
+<h2>10. جدول الصلاحيات لكل دور نظامي</h2>
+<p class="legend"><span>✔ = ممنوح للدور</span><span>(Administrator = كل شيء)</span></p>
+<table>
+<tr><th>الصلاحية</th><th>Executive</th><th>Dept. Manager</th><th>Employee</th></tr>
+<tr><td class="mono">company.dashboard.view</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">department.dashboard.view</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">report.view_company</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">report.view_department</td><td>✔</td><td>✔</td><td></td></tr>
+<tr><td class="mono">activity.view_all</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">activity.view_department</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">audit.view</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">department.view</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">employee.view</td><td>✔</td><td>✔</td><td></td></tr>
+<tr><td class="mono">role.view</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">project.create</td><td></td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">task.manage</td><td></td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">daily_update.submit</td><td></td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">daily_update.view_team</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">daily_update.view_department</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">daily_update.view_all</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">meeting.view / mom.view</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">meeting.create / edit / cancel</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">meeting.mom.edit</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">approval.create</td><td></td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">approval.view</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">approval.approve</td><td>✔</td><td>✔</td><td></td></tr>
+<tr><td class="mono">kb.view</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">kb.create / edit</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">crm.*.view</td><td>✔</td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">crm.*.create / edit</td><td></td><td>✔</td><td>✔</td></tr>
+<tr><td class="mono">crm.*.delete</td><td></td><td>✔</td><td></td></tr>
+<tr><td class="mono">intelligence.view / executive.digest.view</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">ops.view</td><td>✔</td><td></td><td></td></tr>
+<tr><td class="mono">export.data</td><td>✔</td><td>✔</td><td></td></tr>
+</table>
+<small>المصدر: تهيئة الأدوار النظامية في <span class="mono">rbac/catalog.py</span>. عدّلها بأمان من شاشة الأدوار.</small>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="pagebreak" id="sec11">
+<h2>11. خريطة الشاشات والمسارات</h2>
+<table>
+<tr><th>المجموعة في القائمة</th><th>الشاشة</th><th>المسار</th><th>الصلاحية البوّابة</th></tr>
+<tr><td rowspan="6">شخصي</td><td>اللوحة</td><td class="mono">/</td><td>—</td></tr>
+<tr><td>المهام</td><td class="mono">/tasks</td><td>—</td></tr>
+<tr><td>المشاريع</td><td class="mono">/projects</td><td>—</td></tr>
+<tr><td>التركيز</td><td class="mono">/focus</td><td>—</td></tr>
+<tr><td>الملاحظات / المخطط / الذاكرة</td><td class="mono">/notes · /graph · /memory</td><td>—</td></tr>
+<tr><td>الوارد (الإشعارات)</td><td class="mono">/inbox</td><td>—</td></tr>
+<tr><td rowspan="5">الشركة</td><td>التنفيذي</td><td class="mono">/executive</td><td class="mono">company.dashboard.view / intelligence.view</td></tr>
+<tr><td>التحديثات اليومية</td><td class="mono">/daily-updates</td><td class="mono">daily_update.*</td></tr>
+<tr><td>الاجتماعات</td><td class="mono">/meetings</td><td class="mono">meeting.view</td></tr>
+<tr><td>الموافقات</td><td class="mono">/approvals</td><td class="mono">approval.*</td></tr>
+<tr><td>المعرفة</td><td class="mono">/knowledge</td><td class="mono">kb.view</td></tr>
+<tr><td>CRM</td><td>CRM</td><td class="mono">/crm</td><td class="mono">crm.*.view</td></tr>
+<tr><td rowspan="3">الإدارة</td><td>المؤسسة (أقسام/موظفون/أدوار)</td><td class="mono">/organization</td><td class="mono">department.view / employee.view / role.view</td></tr>
+<tr><td>مركز العمليات</td><td class="mono">/ops</td><td class="mono">ops.view</td></tr>
+<tr><td>مركز الإعدادات</td><td class="mono">/settings-center</td><td class="mono">settings.manage (عرض/تعديل)</td></tr>
+</table>
+<small>القائمة الجانبية تُجمّع وتُظهر فقط ما يملك المستخدم صلاحيته (عبر <span class="mono">/rbac/my-permissions</span>).</small>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="pagebreak" id="sec12">
+<h2>12. أفضل الممارسات وقائمة تحقّق الإطلاق</h2>
+
+<h3>أفضل الممارسات</h3>
+<ul>
+  <li><b>أقل امتياز:</b> امنح أضيق دور يكفي. استخدم <code>is_admin</code> لحساب الإعداد فقط.</li>
+  <li><b>النطاق قبل الدور:</b> «مدير قسم» دائمًا بنطاق قسمه، لا global.</li>
+  <li><b>خطوط التبعية أولًا:</b> اضبط <code>manager_id</code> بدقّة — تعتمد عليه الموافقات والتقارير.</li>
+  <li><b>أدوار مخصّصة بدل تعديل النظامية كثيرًا:</b> أنشئ أدوارًا جديدة لاحتياجات خاصة.</li>
+  <li><b>راجع سجل التدقيق</b> دوريًا (<code>audit.view</code>).</li>
+</ul>
+
+<h3>قائمة تحقّق ما قبل الإطلاق (Pilot)</h3>
+<table>
+<tr><th>البند</th><th>الحالة</th></tr>
+<tr><td>إنشاء حساب الأدمن وتسجيل الدخول</td><td>☐</td></tr>
+<tr><td>ضبط إعدادات الشركة (لغة/منطقة زمنية/أمان)</td><td>☐</td></tr>
+<tr><td>إنشاء كل الأقسام + الهيكل الهرمي</td><td>☐</td></tr>
+<tr><td>إنشاء المستخدمين + ملفات الموظفين</td><td>☐</td></tr>
+<tr><td>ضبط خطوط التبعية (manager_id) + قادة الأقسام</td><td>☐</td></tr>
+<tr><td>تعيين الأدوار بالنطاقات الصحيحة</td><td>☐</td></tr>
+<tr><td>اختبار: موظف يرفع موافقة تصل لمديره</td><td>☐</td></tr>
+<tr><td>اختبار: اجتماع ببند عمل يُنشئ مهمة</td><td>☐</td></tr>
+<tr><td>اختبار: المدير يرى تحديثات فريقه فقط</td><td>☐</td></tr>
+<tr><td>اختبار: الرئيس التنفيذي يرى اللوحة التنفيذية</td><td>☐</td></tr>
+<tr><td>تفعيل SMTP لرموز OTP والإشعارات (اختياري للتجربة)</td><td>☐</td></tr>
+<tr><td>تشغيل نسخ احتياطي (pg_dump + mongodump) واختبار استرجاع</td><td>☐</td></tr>
+</table>
+
+<div class="ok"><b>جاهز للانطلاق:</b> بعد إكمال القائمة أعلاه، تستطيع تشغيل تجربة داخلية مع قسم واحد ثم التوسّع. كل الوحدات متاحة من الواجهة وتعمل على APIs حقيقية (بدون محاكاة).</div>
+
+<hr style="margin:24px 0; border:none; border-top:1px solid var(--line);">
+<p style="text-align:center; color:var(--muted); font-size:11px;">
+Tabayyun NotesOps — Company Operating System · دليل التشغيل والإعداد · 2026<br>
+هذا الدليل مبنيّ على الكود الفعلي (وحدات org / rbac / approvals / meetings / crm / knowledge).
+</p>
+</section>
+
+</body>
+</html>

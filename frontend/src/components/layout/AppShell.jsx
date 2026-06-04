@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useLang } from "@/contexts/LanguageContext";
 import {
   LayoutDashboard, FolderGit2, CheckSquare, Timer, NotebookPen,
-  Users, BarChart3, Sparkles, Sun, Moon, LogOut, Command,
+  BarChart3, Sparkles, Sun, Moon, LogOut, Command,
   Settings as SettingsIcon, Brain, CalendarCheck, Languages, CalendarDays,
   Calendar as CalendarIcon, Network, Crown, ClipboardList, CalendarClock,
   Stamp, BookOpen, Briefcase, Building2, Activity, SlidersHorizontal
@@ -57,7 +57,6 @@ export default function AppShell({ children }) {
           show: () => hasAny("approval.create", "approval.view", "approval.approve") },
         { to: "/knowledge", label: t("قاعدة المعرفة", "Knowledge Base"), icon: BookOpen, tid: "nav-knowledge",
           show: () => has("kb.view") },
-        { to: "/team", label: t("الفريق", "Team"), icon: Users, tid: "nav-team" },
         { to: "/analytics", label: t("التحليلات", "Analytics"), icon: BarChart3, tid: "nav-analytics" },
       ],
     },

@@ -134,6 +134,21 @@ async def invite_team(body: InviteIn, request: Request, user=Depends(get_current
     return payload
 
 
+@router.get("/users")
+async def list_users(q: Optional[str] = None, user=Depends(get_current_user)):
+    """Directory of all user accounts (id/name/email) for org pickers — employee
+    creation and role assignment. Authenticated users only; never exposes hashes.
+    Optional `q` filters by name/email (case-insensitive)."""
+    query: dict = {}
+    if q:
+        rx = {"$regex": q.strip(), "$options": "i"}
+        query = {"$or": [{"name": rx}, {"email": rx}]}
+    rows = await db.users.find(
+        query, {"_id": 0, "id": 1, "name": 1, "email": 1, "avatar_url": 1, "is_admin": 1}
+    ).sort("name", 1).to_list(1000)
+    return rows
+
+
 @router.get("/team/invites")
 async def list_invites(user=Depends(get_current_user)):
     rows = await db.invites.find({"invited_by": user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
